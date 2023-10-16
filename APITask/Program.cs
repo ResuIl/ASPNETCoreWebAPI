@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +53,9 @@ builder.Services.AddSwaggerGen(setup =>
 		}
 	});
 });
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("dbConnectionString")));
+
+builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseCosmos(builder.Configuration["Cosmos:Uri"], builder.Configuration["Cosmos:Key"], builder.Configuration["Cosmos:DatabaseName"]));
+
 builder.Services.AddAuthentication(options =>
 {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
